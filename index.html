@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wade List — Private Wishlist</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/nav.css" />
+  <link rel="stylesheet" href="assets/css/home.css" />
+  <link rel="stylesheet" href="assets/css/footer.css" />
+</head>
+<body>
+  <div class="announce-bar" data-announce-bar>
+    <div class="container" style="position: relative;">
+      <p class="announce-bar__text">Private wishlist for Des, Mom &amp; Dad</p>
+      <button type="button" class="announce-bar__close icon-btn" data-announce-close aria-label="Dismiss announcement">
+        <img src="assets/images/icons/close.svg" alt="" />
+      </button>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="site-header__inner container">
+      <a href="index.html" class="wordmark">WADE LIST</a>
+      <nav class="main-nav" aria-label="Primary">
+        <a href="index.html" class="main-nav__link" aria-current="page">Home</a>
+        <button type="button" class="main-nav__trigger" data-menu-trigger aria-expanded="false" aria-controls="megaMenu">
+          Women <img class="chevron" src="assets/images/icons/chevron-down.svg" alt="" />
+        </button>
+        <button type="button" class="main-nav__trigger" data-menu-trigger aria-expanded="false" aria-controls="megaMenu">
+          Men <img class="chevron" src="assets/images/icons/chevron-down.svg" alt="" />
+        </button>
+      </nav>
+      <div class="site-header__icons">
+        <button type="button" class="icon-btn" aria-label="Search"><img src="assets/images/icons/search.svg" alt="" /></button>
+        <button type="button" class="icon-btn" aria-label="Wishlist"><img src="assets/images/icons/heart.svg" alt="" /></button>
+        <button type="button" class="icon-btn icon-btn--account" aria-label="Account"><img src="assets/images/icons/account.svg" alt="" /></button>
+        <button type="button" class="icon-btn icon-btn--menu" data-mobile-menu-trigger aria-label="Open menu"><img src="assets/images/icons/menu.svg" alt="" /></button>
+      </div>
+    </div>
+
+    <div class="mega-menu" id="megaMenu" data-mega-menu>
+      <div class="mega-menu__inner container">
+        <div class="mega-menu__half" data-cols="4">
+          <div class="mega-menu__col">
+            <p class="mega-menu__mobile-heading">Women</p>
+            <p class="mega-menu__col-title" data-nav-title="women-shop"></p>
+            <ul data-nav-list="women-shop"></ul>
+          </div>
+          <div class="mega-menu__col">
+            <p class="mega-menu__col-title" data-nav-title="women-designers"></p>
+            <ul data-nav-list="women-designers"></ul>
+          </div>
+          <div class="mega-menu__col">
+            <p class="mega-menu__col-title" data-nav-title="women-collections"></p>
+            <ul data-nav-list="women-collections"></ul>
+          </div>
+          <div class="mega-menu__feature" data-nav-feature="women"></div>
+        </div>
+        <div class="mega-menu__divider"></div>
+        <div class="mega-menu__half" data-cols="3">
+          <div class="mega-menu__col">
+            <p class="mega-menu__mobile-heading">Men</p>
+            <p class="mega-menu__col-title" data-nav-title="men-shop"></p>
+            <ul data-nav-list="men-shop"></ul>
+          </div>
+          <div class="mega-menu__col">
+            <p class="mega-menu__col-title" data-nav-title="men-designers"></p>
+            <ul data-nav-list="men-designers"></ul>
+          </div>
+          <div class="mega-menu__feature" data-nav-feature="men"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="mega-menu-backdrop" data-mega-menu-backdrop></div>
+
+  <main>
+    <section class="hero">
+      <div class="hero__panel hero__panel--women">
+        <div class="hero__image"><img src="assets/images/hero/women-hero.svg" alt="" /></div>
+        <div class="hero__content">
+          <h1 class="hero__headline serif-display">WOMEN</h1>
+          <div class="hero__cta">
+            <a href="women.html" class="hero__cta-label">View Collection</a>
+            <img class="hero__cta-arrow" src="assets/images/icons/arrow-right.svg" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="hero__panel hero__panel--men">
+        <div class="hero__image"><img src="assets/images/hero/men-hero.svg" alt="" /></div>
+        <div class="hero__content">
+          <h1 class="hero__headline serif-display">MEN</h1>
+          <div class="hero__cta">
+            <a href="men.html" class="hero__cta-label">View Collection</a>
+            <img class="hero__cta-arrow" src="assets/images/icons/arrow-right.svg" alt="" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-row">
+      <div class="container feature-row__inner">
+        <div class="feature-row__item">
+          <img class="feature-row__icon" src="assets/images/icons/feature-curated.svg" alt="" />
+          <div>
+            <p class="feature-row__title">Curated With Care</p>
+            <p class="feature-row__text">Handpicked luxury pieces from the world's top brands.</p>
+          </div>
+        </div>
+        <div class="feature-row__item">
+          <img class="feature-row__icon" src="assets/images/icons/feature-private.svg" alt="" />
+          <div>
+            <p class="feature-row__title">Private &amp; Personal</p>
+            <p class="feature-row__text">A handpicked collection, just for you and your favorites.</p>
+          </div>
+        </div>
+        <div class="feature-row__item">
+          <img class="feature-row__icon" src="assets/images/icons/feature-exclusive.svg" alt="" />
+          <div>
+            <p class="feature-row__title">Exclusive Access</p>
+            <p class="feature-row__text">Early access to rare finds and limited releases.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__base-inner">
+      <div class="site-footer__brand">
+        <span class="site-footer__wordmark">WADE LIST</span>
+        <span class="site-footer__divider">|</span>
+        <span class="site-footer__tagline">Private Wishlist</span>
+      </div>
+      <p class="site-footer__copyright">© 2026 Wade List. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

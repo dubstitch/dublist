@@ -1,0 +1,38 @@
+{
+  "women": {
+    "shop": {
+      "title": "Shop Women",
+      "links": ["New Arrivals", "Handbags", "Jewelry", "Watches", "Sunglasses", "Shoes", "Accessories", "Fragrance"]
+    },
+    "designers": {
+      "title": "Designers",
+      "links": ["Louis Vuitton", "Chanel", "Hermès", "Dior", "Prada", "Celine", "Cartier", "View All Designers"]
+    },
+    "collections": {
+      "title": "Collections",
+      "links": ["The Edit", "Timeless Icons", "Everyday Essentials", "Black Tie", "Travel Selection", "Gifts for Her"]
+    },
+    "feature": {
+      "image": "assets/images/hero/women-hero.svg",
+      "label": "New Arrivals",
+      "subtext": "Discover the latest pieces",
+      "cta": "Shop Now"
+    }
+  },
+  "men": {
+    "shop": {
+      "title": "Shop Men",
+      "links": ["New Arrivals", "Bags", "Watches", "Sunglasses", "Shoes", "Belts", "Wallets", "Fragrance", "Accessories", "Travel"]
+    },
+    "designers": {
+      "title": "Designers",
+      "links": ["Louis Vuitton", "Rolex", "Omega", "Gucci", "Prada", "Saint Laurent", "Tudor", "View All Designers"]
+    },
+    "feature": {
+      "image": "assets/images/hero/men-hero.svg",
+      "label": "New Arrivals",
+      "subtext": "Discover the latest pieces",
+      "cta": "Shop Now"
+    }
+  }
+}

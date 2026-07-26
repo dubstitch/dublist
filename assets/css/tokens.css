@@ -1,0 +1,46 @@
+:root {
+  /* Palette */
+  --color-black: #0e0d0c;
+  --color-charcoal: #1c1a19;
+  --color-cream: #f4efe9;
+  --color-cream-deep: #ece4db;
+  --color-white: #ffffff;
+  --color-dusty-lilac: #cdb9cc;
+  --color-dusty-lilac-deep: #b9a2b9;
+  --color-soft-lilac: #ddd0dd;
+  --color-dusty-pink: #eeded9;
+  --color-dusty-pink-deep: #e3cdc6;
+  --color-ink: #1c1a19;
+  --color-ink-soft: #4a4542;
+  --color-line: rgba(28, 26, 25, 0.14);
+  --color-line-on-dark: rgba(244, 239, 233, 0.22);
+
+  /* Type */
+  --font-serif: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Helvetica Neue", Arial, sans-serif;
+  --tracking-wide: 0.14em;
+  --tracking-wordmark: 0.32em;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Layout */
+  --nav-height: 72px;
+  --announce-height: 40px;
+  --container-max: 1440px;
+
+  /* Z-index scale */
+  --z-announce: 60;
+  --z-nav: 50;
+  --z-mega-menu: 45;
+  --z-category-stage: 10;
+  --z-modal: 100;
+}
