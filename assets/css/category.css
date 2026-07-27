@@ -191,7 +191,9 @@
 }
 
 .carousel__card-frame img {
-  width: 58%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .carousel__arrow {

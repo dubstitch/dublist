@@ -10,18 +10,18 @@
         {
           "id": "lv-pochette-metis",
           "brand": "Louis Vuitton",
-          "name": "Pochette Métis",
-          "price": 2350,
+          "name": "Pochette Métis East West",
+          "price": 3350,
           "currency": "USD",
-          "cardImage": "assets/images/icons/products/bag.svg",
-          "images": ["assets/images/icons/products/bag.svg"],
-          "description": "A compact, go-everywhere silhouette in monogram canvas with a structured flap and adjustable strap.",
-          "details": ["Monogram coated canvas", "Natural cowhide leather trim", "Gold-color hardware", "S-lock closure", "3 compartments", "Adjustable strap"],
-          "dimensions": "9.8 x 7.5 x 2.8 in (L x H x W)",
+          "cardImage": "assets/images/products/women/handbags/lv-pochette-metis-east-west.jpg",
+          "images": ["assets/images/products/women/handbags/lv-pochette-metis-east-west.jpg"],
+          "description": "Made from embossed Monogram Empreinte leather, the Pochette Métis blends signature House style and contemporary detailing. The on-trend East-West silhouette is highlighted by a heritage S-lock and removable short chain, both cast from gold-finish metal.",
+          "details": ["Embossed, grained cowhide leather", "Supple, grained cowhide-leather trim", "Microfiber lining", "Gold-color hardware", "S-lock closure", "3 compartments", "Outside zipped pocket", "Inside zipped pocket", "Strap: Removable, adjustable"],
+          "dimensions": "8.5 x 5.3 x 2.4 in (L x H x W)",
           "whoFor": ["des"],
           "addedDate": "2026-06-15",
           "notes": "Perfect everyday bag. Neutral and classic. Great size.",
-          "productUrl": "https://example.com/lv-pochette-metis"
+          "productUrl": "https://us.louisvuitton.com/eng-us/products/pochette-metis-east-west-monogram-empreinte-nvprod4560029v/M46595"
         },
         {
           "id": "chanel-classic-flap",
@@ -581,6 +581,22 @@
           "addedDate": "2026-03-22",
           "notes": "",
           "productUrl": "https://example.com/smythson-passport"
+        },
+        {
+          "id": "lv-trio-toilet-pouch",
+          "brand": "Louis Vuitton",
+          "name": "Trio Toilet Pouch",
+          "price": 1670,
+          "currency": "USD",
+          "cardImage": "assets/images/products/women/travel/lv-trio-toilet-pouch.jpg",
+          "images": ["assets/images/products/women/travel/lv-trio-toilet-pouch.jpg"],
+          "description": "A set of three, different-sized, classic Louis Vuitton pouches, all made from Monogram canvas. Each pouch has a different vibrant-colored, washable lining, making them as elegant as they are practical.",
+          "details": ["Monogram coated canvas", "Cowhide-leather trim", "Washable lining", "Ruthenium-color hardware", "Poche Toilette 15: 5.9 x 1.5 x 3.9 in", "Poche Toilette 19: 7.5 x 2.4 x 5.9 in", "Poche Toilette 26: 9.8 x 2.2 x 7.9 in", "Zipped closure"],
+          "dimensions": "9.8 x 7.9 x 2.2 in (L x H x W)",
+          "whoFor": ["vada"],
+          "addedDate": "2026-07-20",
+          "notes": "Great for the carry-on. Fits everything.",
+          "productUrl": "https://us.louisvuitton.com/eng-us/products/trio-toilet-pouch-monogram-nvprod5370200v/M47195"
         }
       ]
     },

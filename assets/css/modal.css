@@ -75,7 +75,9 @@
 }
 
 .modal__gallery-main img {
-  width: 46%;
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
 }
 
 .modal__share {
@@ -113,7 +115,9 @@
 }
 
 .modal__thumb img {
-  width: 60%;
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
 }
 
 .modal__brand {
