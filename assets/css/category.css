@@ -122,7 +122,7 @@
 /* Carousel */
 .category-layer__carousel-wrap {
   position: relative;
-  height: 72%;
+  height: 56%;
   display: flex;
   align-items: center;
   /* Grid items default to min-width:auto (their content's min-content size);
@@ -157,7 +157,7 @@
   position: relative;
   flex: 0 0 auto;
   width: 300px;
-  height: 88%;
+  height: 80%;
   margin-left: 28px;
   scroll-snap-align: start;
   z-index: 1;
