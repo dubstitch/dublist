@@ -66,7 +66,7 @@ for(const device of devices){
     await page.locator(".category-layer").first().locator('[data-carousel-next]').click();
     const after=await track.evaluate(el=>el.style.transform);
     if(before===after)issues.push(device.name+" carousel next did not change position");
-    await page.locator(".category-layer").first().locator(".carousel__card").first().click();
+    await page.locator(".category-layer").first().locator(".carousel__card").nth(1).click();
     await page.locator('.modal-overlay[data-open="true"]').waitFor({state:"visible"});
     if(await page.locator("[data-modal-notes-edit],[data-modal-remove]").count())issues.push(device.name+" edit/remove still visible");
     if(!await page.locator("[data-modal-match]").isVisible())issues.push(device.name+" missing match preference");
