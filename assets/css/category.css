@@ -1,318 +1,216 @@
-/* Self-contained scroll region sized to exactly fill the viewport below the
-   header, so this component's internal scrolling never touches window/page
-   scroll (and never interacts with document-level scroll restoration). */
-/* Snap-to-section on desktop is driven entirely by JS (see category-engine.js):
-   combining native `scroll-snap-type` with the sticky-spanning-grid stage below
-   made Chromium's snap correction land on an arbitrary section on load and
-   mid-scroll, independent of the requested scroll position. JS gives exact,
-   predictable control over the same "settle on release" behavior instead. */
-[data-category-scroll] {
-  height: calc(100dvh - var(--sticky-offset, calc(var(--announce-height) + var(--nav-height))));
-  overflow-y: scroll;
-  overflow-x: hidden;
-  overflow-anchor: none;
+/* Wade List collection browser
+   One document scroll and one stable sticky stage. This file is the sole source
+   for collection layout rules, so phone styles do not fight desktop styles. */
+.category-scroll {height:auto;overflow:visible;position:relative;}
+.category-track {position:relative;min-height:100svh;}
+.category-stage {
+  position:sticky;top:var(--nav-height);
+  width:100%;height:calc(100svh - var(--nav-height));
+  min-height:310px;overflow:hidden;isolation:isolate;
+  background:var(--color-cream);
+  transition:background-color .44s ease;
 }
-
-/* Track: one implicit 100dvh grid row per category, driving real scroll height + snap points.
-   Stays out of layout (zero height) until JS has finished appending all markers/layers, then
-   flips to grid in one atomic step — growing it gradually while snap is active is what made
-   Chromium jump scrollTop to an arbitrary snap target on load. */
-[data-category-track] {
-  display: none;
-  grid-auto-rows: 100dvh;
-  position: relative;
-}
-
-@media (min-width: 768px) {
-  [data-category-track].is-ready {
-    display: grid;
-  }
-}
-
-.category-scroll__marker {
-  grid-column: 1;
-}
-
-/* Stage: sticky panel spanning every row, pinned to the top of the scroll container's own
-   scrollport for the track's full height. */
-[data-category-stage] {
-  grid-row: 1 / -1;
-  grid-column: 1;
-  position: sticky;
-  top: 0;
-  height: 100dvh;
-  overflow: hidden;
-  z-index: var(--z-category-stage);
-  background-color: var(--color-cream);
-  transition: background-color 0.1s linear;
-}
-
 .category-layer {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  opacity: 0;
-  will-change: opacity, transform;
+  position:absolute;inset:0;
+  display:block;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .44s ease,visibility 0s linear .44s;
 }
-
-.category-layer[data-index="0"] {
-  opacity: 1;
+.category-layer.is-current {
+  opacity:1;visibility:visible;pointer-events:auto;
+  transition:opacity .44s ease,visibility 0s linear 0s;
 }
-
 .category-layer__grid {
-  display: grid;
-  grid-template-columns: minmax(260px, 360px) 1fr;
-  align-items: center;
-  gap: var(--space-8);
-  width: 100%;
-  height: 100%;
+  display:grid;grid-template-columns:minmax(220px,325px) minmax(0,1fr);
+  align-items:center;gap:clamp(30px,4vw,80px);
+  width:100%;height:100%;max-width:1440px;
+  margin:0 auto;padding:clamp(26px,4vw,64px);
 }
-
-.category-layer__info {
-  padding-left: var(--space-2);
-}
-
-.category-layer__index {
-  display: block;
-  font-size: 13px;
-  letter-spacing: var(--tracking-wide);
-  color: var(--color-ink-soft);
-  margin-bottom: var(--space-3);
-}
-
+.category-layer__info {min-width:0;max-width:100%;}
+.category-layer__heading {display:flex;align-items:baseline;gap:clamp(13px,2vw,24px);}
+.category-layer__index {color:var(--color-ink-soft);font-size:13px;letter-spacing:.17em;flex:none;}
 .category-layer__name {
-  font-size: clamp(40px, 5vw, 64px);
-  line-height: 1;
-  margin-bottom: var(--space-3);
+  font-family:var(--font-serif);font-weight:500;
+  font-size:clamp(44px,5vw,76px);line-height:1.04;
+  overflow-wrap:anywhere;letter-spacing:-.025em;
 }
-
 .category-layer__eyebrow {
-  color: var(--color-ink-soft);
-  margin-bottom: var(--space-4);
-  display: block;
+  display:block;margin:24px 0 9px;
+  font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--color-ink-soft);
 }
-
-.category-layer__desc {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--color-ink-soft);
-  max-width: 320px;
-  margin-bottom: var(--space-6);
-}
-
+.category-layer__desc {max-width:340px;font-size:14px;line-height:1.6;color:var(--color-ink-soft);}
 .category-layer__scroll-cue {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 4px;
+  display:inline-flex;gap:12px;align-items:center;margin-top:20px;
+  font-size:11px;letter-spacing:.14em;font-weight:700;text-transform:uppercase;
+  border-bottom:1px solid currentColor;padding-bottom:7px;
 }
-
-.category-layer__scroll-arrow {
-  width: 12px;
-  height: 12px;
-  transform: rotate(90deg);
-}
-
-/* Carousel */
+.category-layer__scroll-arrow {width:14px;height:14px;transform:rotate(90deg);}
 .category-layer__carousel-wrap {
-  position: relative;
-  height: 56%;
-  display: flex;
-  align-items: center;
-  /* Grid items default to min-width:auto (their content's min-content size);
-     without this, wide unwrapped carousel content refuses to shrink to the
-     grid track's width and pushes the whole layer wider than the viewport. */
-  min-width: 0;
+  position:relative;display:flex;align-items:center;
+  min-width:0;min-height:0;width:100%;height:100%;
+  padding:12px 4px 35px;
 }
-
 .carousel {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  display:block;width:100%;min-width:0;max-width:100%;
+  overflow:hidden;touch-action:pan-y;overscroll-behavior-x:contain;
+  padding:20px 4px;
 }
-
 .carousel__track {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch;
-  padding: 0 var(--space-8) 0 90px;
-  scrollbar-width: none;
+  display:flex;align-items:flex-start;gap:clamp(22px,3vw,40px);
+  width:max-content;max-width:none;overflow:visible;
+  padding:12px 7px 15px;
+  transform:translate3d(0,0,0);
+  transition:transform .5s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
 }
-
-.carousel__track::-webkit-scrollbar {
-  display: none;
-}
-
 .carousel__card {
-  position: relative;
-  flex: 0 0 auto;
-  width: 300px;
-  height: 80%;
-  margin-left: 28px;
-  scroll-snap-align: start;
-  z-index: 1;
+  display:flex;flex:0 0 auto;flex-direction:column;align-items:stretch;
+  width:clamp(192px,21vw,300px);
+  min-width:0;height:auto;margin:0;padding:0;
+  text-align:left;scroll-snap-align:none;cursor:pointer;
 }
-
-.carousel__card:first-child {
-  margin-left: 0;
-}
-
 .carousel__card-frame {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: var(--color-cream);
-  border-radius: 2px;
-  box-shadow: 0 18px 40px rgba(14, 13, 12, 0.16);
-  padding: var(--space-3);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:100%;aspect-ratio:3 / 4;
+  padding:clamp(14px,1.6vw,22px);min-height:0;
+  background:rgba(255,255,255,.7);
+  border:1px solid rgba(28,26,25,.26);border-radius:7px;
+  box-shadow:0 12px 24px rgba(14,13,12,.14);
+  transform:rotate(-1.6deg);
+  transition:transform .25s ease,box-shadow .25s ease;
+  overflow:hidden;
 }
-
-.carousel__card:nth-child(5n+1) .carousel__card-frame { transform: rotate(-4deg); }
-.carousel__card:nth-child(5n+2) .carousel__card-frame { transform: rotate(3deg); }
-.carousel__card:nth-child(5n+3) .carousel__card-frame { transform: rotate(-2deg); }
-.carousel__card:nth-child(5n+4) .carousel__card-frame { transform: rotate(4deg); }
-.carousel__card:nth-child(5n+5) .carousel__card-frame { transform: rotate(-3deg); }
-
-.carousel__card:hover .carousel__card-frame,
-.carousel__card:focus-visible .carousel__card-frame {
-  transform: rotate(0deg) translateY(-10px);
-  box-shadow: 0 26px 52px rgba(14, 13, 12, 0.22);
-  z-index: 2;
+.carousel__card:nth-child(2n) .carousel__card-frame {transform:rotate(1.8deg);}
+.carousel__card:nth-child(3n) .carousel__card-frame {transform:rotate(-.8deg);}
+.carousel__card:is(:hover,:focus-visible) .carousel__card-frame {
+  transform:rotate(0) translateY(-3px);
+  box-shadow:0 17px 32px rgba(14,13,12,.2);
 }
-
+.carousel__card:focus-visible {outline:3px solid var(--color-ink);outline-offset:4px;}
 .carousel__card-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  display:block;width:100%;height:100%;object-fit:contain;
 }
-
+.carousel__card-frame.is-placeholder {
+  background:rgba(255,255,255,.53);
+}
+.carousel__card-frame.is-placeholder img {
+  width:56%;height:56%;opacity:.67;
+}
+.carousel__image-status {
+  position:absolute;left:12px;right:12px;bottom:16px;
+  font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:#544e55;text-align:center;
+}
+.carousel__caption {
+  display:block;padding:15px 4px 0;min-width:0;
+  color:var(--color-ink);
+}
+.carousel__caption-brand {
+  display:block;font-size:11px;font-weight:750;letter-spacing:.14em;
+  line-height:1.5;text-transform:uppercase;
+}
+.carousel__caption-name {
+  display:block;margin-top:4px;
+  font-family:var(--font-serif);font-weight:500;
+  font-size:clamp(19px,2vw,26px);line-height:1.15;
+  overflow-wrap:break-word;
+}
 .carousel__arrow {
-  position: absolute;
-  right: var(--space-4);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--color-white);
-  box-shadow: 0 10px 24px rgba(14, 13, 12, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
+  display:grid;place-items:center;position:absolute;top:47%;
+  z-index:4;width:44px;height:44px;border:1px solid #242122;
+  border-radius:50%;background:rgba(255,255,255,.96);
+  color:#111;box-shadow:0 4px 14px rgba(0,0,0,.12);
+  transform:translateY(-50%);cursor:pointer;
 }
-
-.carousel__arrow img {
-  width: 16px;
-  height: 8px;
+.carousel__arrow--prev {left:3px;}
+.carousel__arrow--next {right:3px;}
+.carousel__arrow img {width:21px;height:13px;}
+.carousel__arrow--prev img {transform:rotate(180deg);}
+.carousel__arrow:disabled {opacity:.3;cursor:default;box-shadow:none;}
+.carousel__dots {
+  position:absolute;left:50%;bottom:9px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transform:translateX(-50%);
+  width:max-content;max-width:100%;min-height:15px;
 }
-
-/* Mobile: normal in-flow full-height blocks, IO fade-in.
-   No native scroll-snap here: with a snap-align target only at the first
-   section's own top edge (there's nothing to align at true page-top, above
-   the announcement bar/header), proximity snap pulled the page down to that
-   target on load instead of resting at 0. The IO fade-in below carries the
-   "settle into the next section" feel well enough on its own. */
-@media (max-width: 767px) {
-  [data-category-scroll] {
-    height: auto;
-    overflow: visible;
-    scroll-snap-type: none;
-  }
-
-  [data-category-track].is-ready {
-    display: block;
-  }
-
-  .category-scroll__marker {
-    display: none;
-  }
-
-  [data-category-stage] {
-    position: static;
-    height: auto;
-    overflow: visible;
-    background-color: transparent;
-  }
-
-  .category-layer {
-    display: block;
-    position: relative;
-    inset: auto;
-    opacity: 0;
-    transform: none !important;
-    pointer-events: auto !important;
-    transition: opacity 0.6s ease;
-    min-height: 100dvh;
-    scroll-snap-align: start;
-    background-color: var(--layer-bg, transparent);
-  }
-
-  .category-layer[data-index="0"],
-  .category-layer.in-view {
-    opacity: 1;
-  }
-
-  .category-layer[data-bg="dusty-lilac"] { --layer-bg: var(--color-dusty-lilac); }
-  .category-layer[data-bg="cream"] { --layer-bg: var(--color-cream); }
-  .category-layer[data-bg="dusty-pink"] { --layer-bg: var(--color-dusty-pink); }
-  .category-layer[data-bg="soft-lilac"] { --layer-bg: var(--color-soft-lilac); }
-
+.carousel__dot {width:11px;height:11px;border:1px solid #504c50;border-radius:99px;background:transparent;}
+.carousel__dot[aria-current="true"] {width:25px;background:#292529;}
+.carousel__dot:focus-visible {outline:3px solid #222;outline-offset:4px;}
+@media(max-width:900px) {
+  .category-layer__grid {grid-template-columns:minmax(180px,30%) minmax(0,1fr);gap:24px;padding:clamp(20px,3vw,34px);}
+  .category-layer__name {font-size:clamp(37px,4.5vw,56px);}
+  .carousel__card {width:clamp(184px,26vw,265px);}
+}
+@media(max-width:767px) and (orientation:portrait) {
+  .category-stage {min-height:340px;}
   .category-layer__grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
-    padding: var(--space-8) 0;
-    height: auto;
+    display:grid;grid-template-columns:minmax(0,1fr);
+    grid-template-rows:auto minmax(0,1fr);
+    align-items:stretch;gap:clamp(14px,2.5svh,26px);
+    padding:clamp(22px,5.6vw,32px) clamp(23px,6vw,34px)
+            clamp(30px,4svh,42px);
   }
-
+  .category-layer__heading {gap:16px;align-items:baseline;}
+  .category-layer__index {font-size:12px;}
+  .category-layer__name {font-size:clamp(42px,11vw,60px);line-height:1.05;}
+  .category-layer__eyebrow {display:none;}
   .category-layer__desc {
-    max-width: none;
+    max-width:100%;font-size:clamp(12px,3.2vw,14px);
+    line-height:1.55;margin-top:10px;
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
   }
-
+  .category-layer__scroll-cue {margin-top:9px;font-size:10px;padding-bottom:4px;}
   .category-layer__carousel-wrap {
-    height: auto;
-    /* Grid items default to min-width:auto (their content's min-content size),
-       so without this the wide, unwrapped carousel content was refusing to
-       shrink to the single-column track's width and blowing out page width. */
-    min-width: 0;
+    align-items:center;align-self:stretch;height:100%;
+    padding:4px 0 26px;
   }
-
-  .carousel__track {
-    scroll-snap-type: x mandatory;
-    padding: 0 var(--space-4);
+  .carousel {padding:9px 3px;}
+  .carousel__track {gap:20px;padding:10px 7px 13px;}
+  .carousel__card {width:clamp(168px,57vw,255px);}
+  .carousel__card-frame {aspect-ratio:3 / 3.95;padding:14px;}
+  .carousel__caption {padding:11px 3px 0;}
+  .carousel__caption-brand {font-size:10px;}
+  .carousel__caption-name {font-size:clamp(18px,4.9vw,23px);}
+  .carousel__arrow {top:46%;width:42px;height:42px;}
+  .carousel__dots {bottom:4px;}
+}
+@media(max-width:767px) and (orientation:landscape) {
+  .category-stage {min-height:260px;height:calc(100svh - var(--nav-height));}
+  .category-layer__grid {
+    grid-template-columns:minmax(170px,36%) minmax(0,1fr);
+    grid-template-rows:1fr;gap:16px;padding:10px 25px;
   }
-
-  .carousel__card {
-    width: 62vw;
-    height: 320px;
-    margin-left: var(--space-3);
-  }
-
-  .carousel__card:first-child {
-    margin-left: var(--space-4);
-  }
-
-  .carousel__card-frame,
-  .carousel__card:hover .carousel__card-frame,
-  .carousel__card:focus-visible .carousel__card-frame {
-    transform: none;
-  }
-
-  .carousel__arrow {
-    display: none;
-  }
+  .category-layer__heading {display:block;}
+  .category-layer__index {display:block;margin-bottom:6px;}
+  .category-layer__name {font-size:clamp(33px,5vw,44px);}
+  .category-layer__desc {font-size:12px;line-height:1.4;margin-top:10px;}
+  .category-layer__eyebrow,.category-layer__scroll-cue {display:none;}
+  .category-layer__carousel-wrap {padding:6px 0 18px;}
+  .carousel {padding:4px;}
+  .carousel__track {padding:8px 6px;gap:18px;}
+  .carousel__card {width:clamp(130px,23vw,180px);}
+  .carousel__card-frame {aspect-ratio:3 / 3.25;padding:9px;}
+  .carousel__caption {padding-top:5px;}
+  .carousel__caption-brand {font-size:9px;}
+  .carousel__caption-name {font-size:17px;}
+  .carousel__dots {bottom:0;}
+}
+@media(max-width:374px) and (orientation:portrait) {
+  .category-layer__grid {padding-inline:21px;gap:12px;}
+  .category-layer__name {font-size:clamp(36px,10.5vw,45px);}
+  .category-layer__desc {-webkit-line-clamp:2;}
+  .carousel__card {width:clamp(156px,56vw,210px);}
+  .carousel__caption-name {font-size:18px;}
+}
+@media(max-height:600px) and (orientation:portrait) {
+  .category-layer__grid {padding-top:14px;padding-bottom:20px;gap:8px;}
+  .category-layer__name {font-size:clamp(33px,9vw,43px);}
+  .category-layer__desc {-webkit-line-clamp:1;}
+  .category-layer__scroll-cue {display:none;}
+  .carousel__card {width:clamp(145px,52vw,215px);}
+  .carousel__card-frame {aspect-ratio:3 / 3.7;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .category-layer,.category-layer.is-current,.category-stage,
+  .carousel__track,.carousel__card-frame {transition:none !important;}
 }
