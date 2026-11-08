@@ -97,11 +97,23 @@ for(const device of viewports){
    return window.scrollY+el.getBoundingClientRect().top-hh+h*.8;
   });
   await page.evaluate(y=>window.scrollTo(0,y),scrollTarget);
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(1000);
   const transition=await page.evaluate(()=>{
    const els=[...document.querySelectorAll(".category-layer")];
    const current=els.filter(el=>el.classList.contains("is-current"));
-   return {active:current.map(x=>x.dataset.index),visible:els.filter(el=>parseFloat(getComputedStyle(el).opacity)>.08).map(x=>x.dataset.index)};
+   const track=document.querySelector("[data-category-track]");
+   const stage=document.querySelector("[data-category-stage]");
+   const hd=document.querySelector(".site-header").getBoundingClientRect().height;
+   return {
+     active:current.map(x=>x.dataset.index),
+     visible:els.filter(el=>parseFloat(getComputedStyle(el).opacity)>.08).map(x=>x.dataset.index),
+     opacity:els.slice(0,3).map(x=>getComputedStyle(x).opacity),
+     scrollY:window.scrollY,
+     headerHeight:hd,
+     trackTop:track.getBoundingClientRect().top,
+     stageHeight:stage.getBoundingClientRect().height,
+     scrollMax:document.documentElement.scrollHeight-innerHeight
+   };
   });
   if(transition.active.length!==1 || transition.active[0]!=="1"||transition.visible.length!==1)
    report(device.name,route,"crossfade leaves sections overlapping "+JSON.stringify(transition));
