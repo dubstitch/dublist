@@ -158,6 +158,7 @@ export function initModal() {
       btn.type = "button";
       btn.className = "modal__thumb";
       btn.dataset.thumbSrc = src;
+      btn.setAttribute("aria-label", "Show product photo " + (i + 1) + " of " + images.length);
       btn.setAttribute("aria-current", String(i === 0));
       btn.innerHTML = `<img src="${src}" alt="" />`;
       btn.addEventListener("click", () => setMainImage(src, `${item.brand} ${item.name}`));
@@ -166,6 +167,8 @@ export function initModal() {
     setMainImage(images[0], `${item.brand} ${item.name}`);
 
     const source = item.productUrl || "";
+    const shareableSource = /^https:\/\//i.test(source) && !source.includes("example.com");
+    shareBtn.hidden = !shareableSource;
     const realSource = /^https:\/\//i.test(source) && !/^https:\/\/(?:www\.)?example\.com/i.test(source);
     if(realSource){
       viewLink.href=source;
@@ -217,7 +220,15 @@ export function initModal() {
     if (e.target === overlay) close();
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && overlay.dataset.open === "true") close();
+    if (overlay.dataset.open !== "true") return;
+    if (e.key === "Escape") { e.preventDefault(); close(); return; }
+    if (e.key !== "Tab") return;
+    const choices = [...modal.querySelectorAll('a[href],button:not([disabled]):not([hidden]),[tabindex="0"]')]
+      .filter(el => el.getClientRects().length && getComputedStyle(el).visibility !== "hidden");
+    if (!choices.length) { e.preventDefault(); modal.focus(); return; }
+    const first=choices[0],last=choices[choices.length-1];
+    if(e.shiftKey && (document.activeElement===first || document.activeElement===modal)){e.preventDefault();last.focus();}
+    else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
   });
 
   return { open, close };
