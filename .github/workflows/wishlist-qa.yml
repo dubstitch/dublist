@@ -1,7 +1,7 @@
 name: Wade List responsive and accessibility QA
 on:
   push:
-    branches: [main]
+    branches: [main, "repair/ios-layout"]
     paths:
       - "assets/**"
       - "data/**"
@@ -33,4 +33,4 @@ jobs:
           sleep 2
           curl -fsS http://127.0.0.1:8765/index.html >/dev/null
       - name: Audit responsive behavior and accessibility
-        run: node qa/wishlist-qa.mjs
+        run: SHOW_SHOTS=1 node qa/wishlist-qa.mjs
