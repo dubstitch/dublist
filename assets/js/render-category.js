@@ -7,6 +7,10 @@ function escapeHtml(str) {
 function buildLayer(cat, index) {
   const section = document.createElement("section");
   section.className = "category-layer";
+  section.id = cat.id;
+  section.setAttribute("aria-label", cat.name + " wishlist");
+  section.setAttribute("aria-hidden", "true");
+  section.inert = true;
   section.dataset.layer = "";
   section.dataset.index = String(index);
   section.dataset.bg = cat.background;
@@ -14,20 +18,21 @@ function buildLayer(cat, index) {
   const cardsHtml = cat.items
     .map(
       (item) => `
-        <button type="button" class="carousel__card" data-item-id="${escapeHtml(item.id)}">
+        <button type="button" class="carousel__card" data-item-id="${escapeHtml(item.id)}" aria-label="View ${escapeHtml(item.brand)} ${escapeHtml(item.name)} details">
           <span class="carousel__card-frame">
-            <img src="${escapeHtml(item.cardImage)}" alt="${escapeHtml(item.brand)} ${escapeHtml(item.name)}" />
+            <img src="${escapeHtml(item.cardImage)}" alt="" loading="${index===0 ? "eager":"lazy"}" />
           </span>
+          <span class="carousel__caption"><span class="carousel__caption-brand">${escapeHtml(item.brand)}</span><span class="carousel__caption-name">${escapeHtml(item.name)}</span></span>
         </button>`
     )
     .join("");
 
   const cueHtml =
     index === 0
-      ? `<a href="#" class="category-layer__scroll-cue" data-scroll-cue>
-           <span>Scroll to Explore</span>
+      ? `<span class="category-layer__scroll-cue">
+           <span>Scroll to browse categories</span>
            <img src="assets/images/icons/arrow-right.svg" alt="" class="category-layer__scroll-arrow" />
-         </a>`
+         </span>`
       : "";
 
   section.innerHTML = `
@@ -40,12 +45,14 @@ function buildLayer(cat, index) {
         ${cueHtml}
       </div>
       <div class="category-layer__carousel-wrap">
-        <div class="carousel" data-carousel>
+        <button type="button" class="carousel__arrow carousel__arrow--prev" data-carousel-prev aria-label="Previous items in ${escapeHtml(cat.name)}"><img src="assets/images/icons/arrow-right.svg" alt="" /></button>
+        <div class="carousel" data-carousel role="region" aria-roledescription="carousel" aria-label="${escapeHtml(cat.name)} products">
           <div class="carousel__track" data-carousel-track>${cardsHtml}</div>
         </div>
-        <button type="button" class="carousel__arrow" data-carousel-next aria-label="Next items in ${escapeHtml(cat.name)}">
+        <button type="button" class="carousel__arrow carousel__arrow--next" data-carousel-next aria-label="Next items in ${escapeHtml(cat.name)}">
           <img src="assets/images/icons/arrow-right.svg" alt="" />
         </button>
+        <div class="carousel__dots" data-carousel-dots role="group" aria-label="Carousel positions"></div>
       </div>
     </div>`;
 
@@ -56,20 +63,6 @@ export async function renderCategoryPage({ dataUrl, scrollEl, trackEl, stageEl, 
   const res = await fetch(dataUrl);
   const data = await res.json();
   const categories = data.categories;
-
-  categories.forEach((cat, i) => {
-    const spacer = document.createElement("div");
-    spacer.className = "category-scroll__marker";
-    spacer.dataset.index = cat.index;
-    // Explicit row placement: the stage element spans grid-row 1/-1 and sits
-    // first in the static markup, so sparse auto-placement treats row 1 as
-    // already occupied and bumps every auto-placed marker down by one row —
-    // shifting all snap points (and the "current section" the page loads on)
-    // off by exactly one category. Placing each marker explicitly sidesteps
-    // that collision entirely.
-    spacer.style.gridRow = String(i + 1);
-    trackEl.appendChild(spacer);
-  });
 
   const layers = categories.map((cat, i) => {
     const layer = buildLayer(cat, i);
@@ -84,17 +77,8 @@ export async function renderCategoryPage({ dataUrl, scrollEl, trackEl, stageEl, 
       if (item) btn.addEventListener("click", () => onCardClick(item, cat));
     });
 
-    const cue = layer.querySelector("[data-scroll-cue]");
-    cue?.addEventListener("click", (e) => {
-      e.preventDefault();
-      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-      if (isDesktop) {
-        scrollEl.scrollBy({ top: scrollEl.clientHeight, behavior: "smooth" });
-      } else {
-        layers[i + 1]?.scrollIntoView({ behavior: "smooth" });
-      }
-    });
   });
 
+  trackEl.style.setProperty("--category-count", String(layers.length));
   return { categories, layers };
 }
