@@ -17,7 +17,7 @@ permissions:
 jobs:
   browser-check:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,11 +26,13 @@ jobs:
       - name: Install Playwright and axe
         run: |
           npm install --no-save --no-package-lock playwright@1.56.1 @axe-core/playwright@4.11.0
-          npx playwright install chromium --with-deps
+          npx playwright install chromium webkit --with-deps
       - name: Serve site
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/wishlist-http.log 2>&1 &
           sleep 2
           curl -fsS http://127.0.0.1:8765/index.html >/dev/null
       - name: Audit responsive behavior and accessibility
-        run: SHOW_SHOTS=1 node qa/wishlist-qa.mjs
+        run: |
+          BROWSER_NAME=chromium SHOW_SHOTS=1 node qa/wishlist-qa.mjs
+          BROWSER_NAME=webkit SHOW_SHOTS=1 node qa/wishlist-qa.mjs
