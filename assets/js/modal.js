@@ -212,7 +212,7 @@ export function initModal() {
     setTimeout(() => {
       overlay.hidden = true;
     }, 250);
-    lastFocused?.focus();
+    lastFocused?.focus({ preventScroll: true });
   }
 
   closeBtn.addEventListener("click", close);
