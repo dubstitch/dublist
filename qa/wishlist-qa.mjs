@@ -1,6 +1,7 @@
-import { chromium } from "playwright";
+import { chromium, webkit } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
-const browser=await chromium.launch({headless:true});
+const engine=process.env.BROWSER_NAME==="webkit"?webkit:chromium;
+const browser=await engine.launch({headless:true});
 const base="http://127.0.0.1:8765";
 const problems=[];
 const viewports=[
@@ -45,6 +46,10 @@ for(const device of viewports){
     return {womenY:a.top,menY:b.top};
    });
    if(device.width<768&&Math.abs(panels.womenY-panels.menY)>2)report(device.name,route,"women/men cards are stacked on mobile");
+   if(device.name==="iphone-regular"&&process.env.SHOW_SHOTS==="1"){
+     const jpeg=await page.screenshot({type:"jpeg",quality:43});
+     console.log("SHOT_BASE64:"+(process.env.BROWSER_NAME||"chromium")+"-home:"+jpeg.toString("base64"));
+   }
    continue;
   }
   const metrics=await page.evaluate(()=>{
@@ -82,7 +87,7 @@ for(const device of viewports){
   }
   if(device.name==="iphone-regular"&&process.env.SHOW_SHOTS==="1"&&shots<3){
    const jpeg=await page.screenshot({type:"jpeg",quality:40});
-   console.log("SHOT_BASE64:"+device.name+"-"+route+":"+jpeg.toString("base64"));
+   console.log("SHOT_BASE64:"+(process.env.BROWSER_NAME||"chromium")+"-"+device.name+"-"+route+":"+jpeg.toString("base64"));
    shots++;
   }
   const scrollTarget=await page.evaluate(()=>{
@@ -102,7 +107,7 @@ for(const device of viewports){
    report(device.name,route,"crossfade leaves sections overlapping "+JSON.stringify(transition));
   if(device.name==="iphone-regular"&&process.env.SHOW_SHOTS==="1"&&shots<3){
    const jpeg=await page.screenshot({type:"jpeg",quality:40});
-   console.log("SHOT_BASE64:"+device.name+"-after-scroll-"+route+":"+jpeg.toString("base64"));
+   console.log("SHOT_BASE64:"+(process.env.BROWSER_NAME||"chromium")+"-"+device.name+"-after-scroll-"+route+":"+jpeg.toString("base64"));
    shots++;
   }
  }
