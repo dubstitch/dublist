@@ -214,3 +214,41 @@
   .category-layer,.category-layer.is-current,.category-stage,
   .carousel__track,.carousel__card-frame {transition:none !important;}
 }
+
+/* Short landscape phones need compact cards and captions fully above the
+   browser's bottom controls. Applies by height, not portrait width. */
+@media(orientation:landscape) and (max-height:520px) {
+  .category-stage {
+    min-height:0;
+    height:calc(100svh - var(--nav-height));
+  }
+  .category-layer__grid {
+    grid-template-columns:minmax(150px,32%) minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr);
+    align-items:center;
+    gap:18px;
+    padding:10px 28px;
+  }
+  .category-layer__heading {display:block;}
+  .category-layer__index {display:block;margin-bottom:6px;}
+  .category-layer__name {font-size:clamp(30px,4vw,45px);}
+  .category-layer__desc {
+    margin-top:9px;font-size:12px;line-height:1.4;
+    display:-webkit-box;-webkit-box-orient:vertical;
+    -webkit-line-clamp:2;overflow:hidden;
+  }
+  .category-layer__eyebrow,.category-layer__scroll-cue {display:none;}
+  .category-layer__carousel-wrap {
+    min-height:0;height:100%;max-height:100%;
+    padding:3px 4px 15px;
+  }
+  .carousel {height:100%;padding:2px 3px;display:flex;align-items:center;}
+  .carousel__track {height:auto;padding:4px 5px;gap:17px;}
+  .carousel__card {width:clamp(128px,18vw,164px);}
+  .carousel__card-frame {aspect-ratio:4 / 4.2;padding:9px;}
+  .carousel__caption {padding-top:5px;}
+  .carousel__caption-brand {font-size:9px;}
+  .carousel__caption-name {font-size:16px;line-height:1.05;}
+  .carousel__image-status {font-size:7px;bottom:9px;}
+  .carousel__dots {bottom:0;}
+}
