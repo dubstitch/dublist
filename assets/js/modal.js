@@ -60,6 +60,7 @@ function buildModalMarkup() {
             <div class="modal__who-pills" data-modal-who></div>
           </div>
 
+          <p class="modal__match" data-modal-match>Match preference: Not specified</p>
           <div class="modal__meta">
             <div class="modal__meta-item">
               <img src="assets/images/icons/calendar.svg" alt="" />
@@ -70,20 +71,15 @@ function buildModalMarkup() {
             </div>
             <div class="modal__meta-item">
               <div style="width:100%">
-                <div class="modal__notes-header">
-                  <span class="modal__meta-label">Notes</span>
-                  <button type="button" class="modal__notes-edit" data-modal-notes-edit aria-label="Edit notes">
-                    <img src="assets/images/icons/pencil.svg" alt="" />
-                  </button>
-                </div>
+                <div class="modal__notes-header"><span class="modal__meta-label">Family notes</span></div>
                 <p class="modal__meta-value" data-modal-notes></p>
               </div>
             </div>
           </div>
 
+          <p class="modal__view-only">Shopper view. Editing and shopper notes require a secure account, which is not active yet.</p>
           <div class="modal__actions">
-            <a href="#" target="_blank" rel="noopener" class="btn btn--outline" data-modal-view>View Product Page</a>
-            <button type="button" class="btn btn--solid" data-modal-remove>Remove from Wishlist</button>
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn--outline" data-modal-view>View original listing</a>
           </div>
         </div>
       </div>
@@ -106,9 +102,9 @@ export function initModal() {
   const who = overlay.querySelector("[data-modal-who]");
   const added = overlay.querySelector("[data-modal-added]");
   const notes = overlay.querySelector("[data-modal-notes]");
-  const notesEdit = overlay.querySelector("[data-modal-notes-edit]");
+  const match = overlay.querySelector("[data-modal-match]");
   const viewLink = overlay.querySelector("[data-modal-view]");
-  const removeBtn = overlay.querySelector("[data-modal-remove]");
+  // Read-only until a real authenticated editor is implemented.
   const closeBtn = overlay.querySelector("[data-modal-close]");
   const shareBtn = overlay.querySelector("[data-modal-share]");
 
@@ -152,6 +148,8 @@ export function initModal() {
     added.textContent = formatDate(item.addedDate);
     notes.textContent = item.notes || "No notes yet.";
     notes.contentEditable = "false";
+    const preference = item.matchPreference === "exact" ? "Exact item requested" : item.matchPreference === "similar" ? "Similar options accepted" : "Not specified";
+    match.textContent = "Match preference: " + preference;
 
     const images = item.images && item.images.length ? item.images : [item.cardImage];
     thumbs.innerHTML = "";
@@ -167,7 +165,19 @@ export function initModal() {
     });
     setMainImage(images[0], `${item.brand} ${item.name}`);
 
-    viewLink.href = item.productUrl || "#";
+    const source = item.productUrl || "";
+    const realSource = /^https:\/\//i.test(source) && !/^https:\/\/(?:www\.)?example\.com/i.test(source);
+    if(realSource){
+      viewLink.href=source;
+      viewLink.removeAttribute("aria-disabled");
+      viewLink.removeAttribute("tabindex");
+      viewLink.textContent="View original listing";
+    }else{
+      viewLink.removeAttribute("href");
+      viewLink.setAttribute("aria-disabled","true");
+      viewLink.setAttribute("tabindex","-1");
+      viewLink.textContent="Source listing not available";
+    }
 
     overlay.hidden = false;
     requestAnimationFrame(() => {
@@ -191,13 +201,6 @@ export function initModal() {
       }
     };
 
-    notesEdit.onclick = () => {
-      const editing = notes.contentEditable === "true";
-      notes.contentEditable = String(!editing);
-      if (!editing) notes.focus();
-    };
-
-    removeBtn.onclick = () => close();
   }
 
   function close() {
