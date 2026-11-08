@@ -114,3 +114,8 @@ body { overflow-x: clip; }
 @media(max-height:620px) and (max-width:767px) {
  .hero {min-height:clamp(260px,49dvh,350px);}
 }
+
+/* Fit the announcement and preserve balanced gutters on every phone. */
+.announce-bar__text{white-space:normal;text-align:center;line-height:1.25;padding-inline:48px;font-size:11px;letter-spacing:.14em;}
+.announce-bar .container{width:100%;}
+@media(max-width:767px){.announce-bar__text{font-size:10px;letter-spacing:.13em;line-height:1.35;}}
