@@ -228,3 +228,14 @@ body { overflow-x: clip; }
 .modal__thumbs {overflow-x:auto;scrollbar-width:thin;padding:4px;}
 .modal__share {width:36px;height:36px;display:grid;place-items:center;}
 .modal__share img {width:19px;height:19px;}
+
+/* Keyboard and touch ergonomics for the shopper and screen readers. */
+.wishlist-skip {position:fixed;left:10px;top:-90px;z-index:300;background:#fff;color:#111;padding:12px 18px;font-weight:700;border:3px solid #111;border-radius:6px;}
+.wishlist-skip:focus {top:12px;}
+.announce-bar__close {width:44px;height:40px;right:8px;display:grid;place-items:center;}
+.announce-bar__close img {width:17px;height:17px;}
+.site-header__icons .icon-btn--menu {min-width:44px;min-height:44px;}
+.category-layer__carousel-wrap .carousel__arrow {min-width:44px;min-height:44px;}
+@media(max-height:620px) and (max-width:767px) {
+ .hero {min-height:clamp(260px,49dvh,350px);}
+}
