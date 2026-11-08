@@ -17,10 +17,11 @@ function buildLayer(cat, index) {
 
   const cardsHtml = cat.items
     .map(
-      (item) => `
+      (item) => ` 
         <button type="button" class="carousel__card" data-item-id="${escapeHtml(item.id)}" aria-label="View ${escapeHtml(item.brand)} ${escapeHtml(item.name)} details">
-          <span class="carousel__card-frame">
+          <span class="carousel__card-frame${/\.svg(?:[?#]|$)/i.test(item.cardImage) ? " is-placeholder" : ""}">
             <img src="${escapeHtml(item.cardImage)}" alt="" loading="${index===0 ? "eager":"lazy"}" />
+            ${/\.svg(?:[?#]|$)/i.test(item.cardImage) ? '<span class="carousel__image-status">Product photo pending</span>' : ""}
           </span>
           <span class="carousel__caption"><span class="carousel__caption-brand">${escapeHtml(item.brand)}</span><span class="carousel__caption-name">${escapeHtml(item.name)}</span></span>
         </button>`
@@ -38,8 +39,10 @@ function buildLayer(cat, index) {
   section.innerHTML = `
     <div class="category-layer__grid container">
       <div class="category-layer__info">
-        <span class="category-layer__index">${escapeHtml(cat.index)}</span>
-        <h2 class="category-layer__name serif-display">${escapeHtml(cat.name)}</h2>
+        <div class="category-layer__heading">
+          <span class="category-layer__index">${escapeHtml(cat.index)}</span>
+          <h2 class="category-layer__name serif-display">${escapeHtml(cat.name)}</h2>
+        </div>
         <p class="category-layer__eyebrow eyebrow">Curated Wishlist</p>
         <p class="category-layer__desc">${escapeHtml(cat.description)}</p>
         ${cueHtml}
