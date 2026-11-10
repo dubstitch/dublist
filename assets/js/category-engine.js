@@ -6,6 +6,11 @@
 */
 export function initCategoryEngine({trackEl,stageEl,layers}){
   if(!layers.length)return;
+  const html=document.documentElement;
+  // The footer exists before the async product data loads. If snapping is
+  // already enabled the browser can latch to the footer and start at the end.
+  html.classList.remove("snap-ready");
+  try{history.scrollRestoration="manual";}catch(_){}
   const header=document.querySelector(".site-header");
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   let active=0,scheduled=false,previousWidth=window.innerWidth;
@@ -61,6 +66,7 @@ export function initCategoryEngine({trackEl,stageEl,layers}){
     if(index>=0)goto(index,"smooth");
   }
   window.addEventListener("scroll",queue,{passive:true});
+  window.addEventListener("scrollend",()=>{scheduled=false;detect();},{passive:true});
   window.addEventListener("resize",()=>{
     // iOS chrome can change visual height repeatedly without orientation.
     // Never bounce the reader to another collection on a toolbar resize.
@@ -76,6 +82,14 @@ export function initCategoryEngine({trackEl,stageEl,layers}){
     requestAnimationFrame(()=>requestAnimationFrame(()=>goto(active,"instant")));
   },{passive:true});
   select(0);
-  queue();
-  if(window.location.hash)requestAnimationFrame(()=>requestAnimationFrame(jumpHash));
+  if(!window.location.hash)window.scrollTo({top:0,behavior:"instant"});
+  // Enable native snap only after all nine actual sections have been rendered
+  // and the first category is at the top of the viewport.
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(!window.location.hash)window.scrollTo({top:0,behavior:"instant"});
+    html.classList.add("snap-ready");
+    html.dataset.wishlistReady="true";
+    if(window.location.hash)jumpHash();
+    else queue();
+  }));
 }
