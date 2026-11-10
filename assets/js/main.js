@@ -1,5 +1,5 @@
 import { initNav } from "./nav.js";
-import { initSectionRail } from "./section-rail.js?v=20261110rail1";
+import { initSectionRail } from "./section-rail.js?v=20261110rail2";
 
 document.documentElement.classList.replace("no-js", "js");
 
@@ -23,7 +23,7 @@ if (page === "women" || page === "men") {
   const [{ initModal }, { renderCategoryPage }, { initCategoryEngine }, { initCarousels }] = await Promise.all([
     import("./modal.js?v=20261110glass1"),
     import("./render-category.js"),
-    import("./category-engine.js?v=20261110glass3"),
+    import("./category-engine.js?v=20261110rail2"),
     import("./carousel.js?v=20261110glass1"),
   ]);
 
