@@ -402,7 +402,7 @@ html.modal-open .wl-section-rail__shade {
   .wl-section-rail__item {min-height:41px}
   .wl-section-rail__name {font-size:13px}
   .wl-section-rail[data-mode="home"] {
-    top:max(calc(var(--nav-height) + 12px),30dvh);
+    top:max(calc(var(--nav-height) + 12px),43dvh);
   }
 }
 @media(orientation:landscape) and (max-height:520px) {
