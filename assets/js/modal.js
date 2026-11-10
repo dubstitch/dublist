@@ -18,15 +18,17 @@ function buildModalMarkup() {
   overlay.dataset.modalOverlay = "";
   overlay.innerHTML = `
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalProductName" data-modal tabindex="-1">
-      <button type="button" class="modal__close icon-btn" data-modal-close aria-label="Close">
-        <img src="assets/images/icons/close.svg" alt="" />
-      </button>
+      <div class="modal__toolbar" role="group" aria-label="Product actions">
+        <button type="button" class="modal__share icon-btn" data-modal-share aria-label="Share this item">
+          <img src="assets/images/icons/share.svg" alt="" />
+        </button>
+        <button type="button" class="modal__close icon-btn" data-modal-close aria-label="Close">
+          <img src="assets/images/icons/close.svg" alt="" />
+        </button>
+      </div>
       <div class="modal__body">
         <div class="modal__gallery">
           <div class="modal__gallery-main">
-            <button type="button" class="modal__share icon-btn" data-modal-share aria-label="Share this item">
-              <img src="assets/images/icons/share.svg" alt="" />
-            </button>
             <img data-modal-main-image src="" alt="" />
           </div>
           <div class="modal__thumbs" data-modal-thumbs></div>
@@ -186,6 +188,7 @@ export function initModal() {
     requestAnimationFrame(() => {
       overlay.dataset.open = "true";
     });
+    document.documentElement.classList.add("modal-open");
     document.body.style.overflow = "hidden";
     modal.focus();
 
@@ -209,6 +212,7 @@ export function initModal() {
   function close() {
     overlay.dataset.open = "false";
     document.body.style.overflow = "";
+    document.documentElement.classList.remove("modal-open");
     setTimeout(() => {
       overlay.hidden = true;
     }, 250);
