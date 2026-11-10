@@ -9,7 +9,6 @@ const cases=[
  {name:"desktop",width:1440,height:900}
 ];
 const routes=[
- {path:"index.html",count:4,first:"Wishlist activity",next:"Women & men",jump:2},
  {path:"women.html",count:9,first:"Handbags",next:"Jewelry",jump:2},
  {path:"men.html",count:9,first:"Bags",next:"Watches",jump:2}
 ];
@@ -25,6 +24,16 @@ for(const [engineName,engine] of [["chromium",chromium],["webkit",webkit]]){
     });
     const page=await context.newPage();
     page.on("pageerror",e=>report(engineName+" "+viewport.name,"JS error "+e.message));
+    // Homepage should NOT have the vertical scroll navigator anymore.
+    await page.goto("http://127.0.0.1:8765/index.html",{waitUntil:"networkidle"});
+    const home=await page.evaluate(()=>({
+      rail:!!document.querySelector(".wl-section-rail"),
+      women:!!document.querySelector('a[href="women.html"]'),
+      men:!!document.querySelector('a[href="men.html"]'),
+      horizontalOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
+    }));
+    if(home.rail||!home.women||!home.men||home.horizontalOverflow>2)
+      report(engineName+" "+viewport.name+" index.html","homepage rail should be removed without affecting wishlist links "+JSON.stringify(home));
     for(const route of routes){
       const name=engineName+" "+viewport.name+" "+route.path;
       try{
