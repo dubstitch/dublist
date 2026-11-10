@@ -66,6 +66,16 @@ export function initCategoryEngine({trackEl,stageEl,layers}){
     if(index>=0)goto(index,"smooth");
   }
   window.addEventListener("scroll",queue,{passive:true});
+  // Safari occasionally updates the scroll root without delivering the
+  // expected window scroll event after a programmatic snap. The observer
+  // tracks category visibility independently of those events.
+  if("IntersectionObserver" in window){
+    const observer=new IntersectionObserver(()=>{
+      if(!html.classList.contains("modal-open"))detect();
+    },{root:null,rootMargin:"-"+headerHeight()+"px 0px -35% 0px",threshold:[0,.01,.3]});
+    layers.forEach(layer=>observer.observe(layer));
+  }
+  document.addEventListener("scrollend",()=>{scheduled=false;detect();},{capture:true,passive:true});
   window.addEventListener("scrollend",()=>{scheduled=false;detect();},{passive:true});
   window.addEventListener("resize",()=>{
     // iOS chrome can change visual height repeatedly without orientation.
