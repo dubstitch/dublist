@@ -178,7 +178,8 @@ for(const [engineName,engine] of browserEngines){
     await page.locator(".category-layer").nth(1).evaluate(layer=>{
       layer.scrollIntoView({block:"start",behavior:"instant"});
     });
-    await page.waitForTimeout(370);
+    await page.waitForFunction(()=>document.querySelectorAll(".category-layer")[1].classList.contains("is-current"),{timeout:1500}).catch(()=>{});
+    await page.waitForTimeout(120);
     const section=await page.evaluate(()=>{
       const first=document.querySelectorAll(".category-layer")[0].getBoundingClientRect();
       const second=document.querySelectorAll(".category-layer")[1].getBoundingClientRect();
