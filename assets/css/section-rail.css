@@ -428,3 +428,10 @@ html.modal-open .wl-section-rail__shade {
     transition:none !important;
   }
 }
+
+/* Keep the homepage progress rail below the activity cards on larger screens. */
+@media(min-width:768px){
+  .wl-section-rail[data-mode="home"] {
+    top:max(calc(var(--nav-height) + 16px),30dvh);
+  }
+}
