@@ -107,10 +107,11 @@ body {background:#eee7e4;}
 /* TRUE CATEGORY SNAP: nine actual readable document sections.
    No sticky phantom track, opacity stack or synthetic scroll height. */
 html.snap-page {
-  scroll-snap-type:y mandatory;
+  scroll-snap-type:none;
   scroll-padding-top:var(--nav-height);
   scroll-behavior:smooth;
 }
+html.snap-page.snap-ready {scroll-snap-type:y mandatory}
 html.snap-page.modal-open {scroll-snap-type:none !important;scroll-behavior:auto !important}
 .snap-page .category-scroll,
 .snap-page .category-track,
