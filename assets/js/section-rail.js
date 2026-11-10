@@ -3,7 +3,7 @@
   A discreet liquid-glass progress spine with a full accessible index.
   The document owns scrolling. The navigator never hijacks wheel/touch.
 */
-export function initSectionRail({sections, title="Wishlist sections", listenForCategoryChanges=false}={}) {
+export function initSectionRail({sections, title="Wishlist sections", mode="collections", listenForCategoryChanges=false}={}) {
   const items=(sections||[]).map(entry=>({
     id:entry.id,
     label:entry.label,
@@ -14,6 +14,7 @@ export function initSectionRail({sections, title="Wishlist sections", listenForC
 
   const nav=document.createElement("nav");
   nav.className="wl-section-rail";
+  nav.dataset.mode=mode;
   nav.setAttribute("aria-label",title);
   nav.dataset.railCount=String(items.length);
   const compact=document.createElement("div");
