@@ -30,6 +30,9 @@ export function initCategoryEngine({trackEl,stageEl,layers}){
     if(active===index&&layers[index].classList.contains("is-current"))return;
     active=index;
     layers.forEach((layer,j)=>layer.classList.toggle("is-current",j===index));
+    document.dispatchEvent(new CustomEvent("wishlist:sectionchange",{
+      detail:{index,id:layers[index].id}
+    }));
   }
   function detect(){
     scheduled=false;
