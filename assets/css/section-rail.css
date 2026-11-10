@@ -435,3 +435,11 @@ html.modal-open .wl-section-rail__shade {
     top:max(calc(var(--nav-height) + 16px),30dvh);
   }
 }
+
+/* Narrow-height landscape must keep the expanded section list on screen,
+   including homepage tablets whose width exceeds the phone breakpoint. */
+@media(orientation:landscape) and (max-height:520px) {
+  .wl-section-rail[data-mode="home"] {
+    top:calc(var(--nav-height) + 7px);
+  }
+}
