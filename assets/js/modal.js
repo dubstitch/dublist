@@ -111,6 +111,8 @@ export function initModal() {
   const shareBtn = overlay.querySelector("[data-modal-share]");
 
   let lastFocused = null;
+  let openingFrame = 0;
+  let closingTimeout = 0;
 
   function setMainImage(src, alt) {
     mainImage.src = src;
@@ -184,9 +186,12 @@ export function initModal() {
       viewLink.textContent="Source listing not available";
     }
 
+    if (closingTimeout) { clearTimeout(closingTimeout); closingTimeout=0; }
+    if (openingFrame) cancelAnimationFrame(openingFrame);
     overlay.hidden = false;
-    requestAnimationFrame(() => {
-      overlay.dataset.open = "true";
+    openingFrame=requestAnimationFrame(() => {
+      openingFrame=0;
+      if (!overlay.hidden) overlay.dataset.open = "true";
     });
     document.documentElement.classList.add("modal-open");
     document.body.style.overflow = "hidden";
@@ -210,11 +215,14 @@ export function initModal() {
   }
 
   function close() {
+    if (openingFrame) { cancelAnimationFrame(openingFrame); openingFrame=0; }
+    if (closingTimeout) clearTimeout(closingTimeout);
     overlay.dataset.open = "false";
     document.body.style.overflow = "";
     document.documentElement.classList.remove("modal-open");
-    setTimeout(() => {
-      overlay.hidden = true;
+    closingTimeout=setTimeout(() => {
+      if (overlay.dataset.open !== "true") overlay.hidden=true;
+      closingTimeout=0;
     }, 250);
     lastFocused?.focus({ preventScroll: true });
   }
@@ -224,7 +232,8 @@ export function initModal() {
     if (e.target === overlay) close();
   });
   document.addEventListener("keydown", (e) => {
-    if (overlay.dataset.open !== "true") return;
+    // Escape works immediately, even during the first opening animation frame.
+    if (overlay.hidden) return;
     if (e.key === "Escape") { e.preventDefault(); close(); return; }
     if (e.key !== "Tab") return;
     const choices = [...modal.querySelectorAll('a[href],button:not([disabled]):not([hidden]),[tabindex="0"]')]
