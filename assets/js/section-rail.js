@@ -74,7 +74,7 @@ export function initSectionRail({sections, title="Wishlist sections", mode="coll
   nav.append(compact,panel);
   document.body.append(nav);
 
-  let active=0,expanded=false,frame=0;
+  let active=0,expanded=false,frame=0,pinned=-1;
   const format=i=>String(i+1).padStart(2,"0");
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   const points=[],rows=[];
@@ -103,6 +103,7 @@ export function initSectionRail({sections, title="Wishlist sections", mode="coll
   function jump(index){
     const item=items[index];
     if(!item)return;
+    pinned=index;
     update(index);
     closePanel();
     item.el.scrollIntoView({
@@ -170,7 +171,17 @@ export function initSectionRail({sections, title="Wishlist sections", mode="coll
     frame=0;
     if(document.documentElement.classList.contains("modal-open"))return;
     const headerHeight=document.querySelector(".site-header")?.getBoundingClientRect().height||72;
-    const probe=headerHeight+Math.max(30,(window.innerHeight-headerHeight)*.41);
+    // Read the section nearest the visible top, not the viewport midpoint.
+    // Small homepage activity panels must remain 'current' at page load.
+    const probe=headerHeight+Math.max(30,Math.min(96,(window.innerHeight-headerHeight)*.13));
+    if(pinned>=0){
+      const rect=items[pinned]?.el.getBoundingClientRect();
+      if(rect&&rect.bottom>headerHeight+3&&rect.top<window.innerHeight-3){
+        if(pinned!==active)update(pinned);
+        return;
+      }
+      pinned=-1;
+    }
     let closest=0,distance=Infinity;
     items.forEach((item,i)=>{
       const rect=item.el.getBoundingClientRect();
@@ -187,6 +198,14 @@ export function initSectionRail({sections, title="Wishlist sections", mode="coll
     if(frame)return;
     frame=requestAnimationFrame(detect);
   }
+  // Explicit manual scrolling unlocks a previously chosen index so progress
+  // follows the reader again, even if the clicked section was near the footer.
+  const releasePin=()=>{pinned=-1;requestDetect();};
+  window.addEventListener("wheel",releasePin,{passive:true});
+  window.addEventListener("touchmove",releasePin,{passive:true});
+  document.addEventListener("keydown",event=>{
+    if(["PageDown","PageUp","ArrowDown","ArrowUp"," ","Home","End"].includes(event.key))releasePin();
+  },{passive:true});
   expand.addEventListener("click",openPanel);
   close.addEventListener("click",()=>closePanel(true));
   shade.addEventListener("click",()=>closePanel(true));
