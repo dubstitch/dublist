@@ -562,3 +562,21 @@ html.modal-open .wl-section-rail__shade {
 @media(prefers-reduced-motion:reduce) {
   .wl-section-rail[data-mode="collections"] * {animation:none !important}
 }
+
+/* Dark men's collections need a luminous glass plate beneath the
+   small dark progress numerals. Keep it translucent, never opaque. */
+body[data-page="men"] .wl-section-rail[data-mode="collections"] .wl-section-rail__compact {
+  background:
+    linear-gradient(95deg,rgba(247,225,253,.79),rgba(232,203,247,.57) 55%,rgba(236,207,252,.43)) !important;
+  border-left-color:rgba(255,243,255,.94) !important;
+  box-shadow:
+    inset 1px 0 0 rgba(255,255,255,.98),
+    0 0 19px rgba(207,138,229,.23),
+    -9px 0 28px rgba(199,125,229,.22) !important;
+}
+body[data-page="men"] .wl-section-rail[data-mode="collections"] .wl-section-rail__current {
+  color:#321a3d !important;
+}
+body[data-page="men"] .wl-section-rail[data-mode="collections"] .wl-section-rail__expand {
+  background:rgba(255,250,255,.7) !important;
+}
