@@ -31,11 +31,12 @@ for(const [engineName,engine] of browserEngines){
   for(const route of ["index.html","women.html","men.html"]){
    const name=engineName+" "+size.name+" "+route;
    try{
-    const response=await page.goto(base+route,{waitUntil:"domcontentloaded"});
+    const response=await page.goto(base+route,{waitUntil:"networkidle"});
     fail(name,response?.ok(),"unexpected HTTP response "+response?.status());
     if(route!=="index.html"){
       await page.locator(".category-layer").nth(8).waitFor({state:"attached"});
-      await page.waitForTimeout(150);
+      await page.waitForFunction(()=>document.documentElement.dataset.wishlistReady==="true");
+      await page.waitForTimeout(130);
     }
     const global=await page.evaluate(()=>{
       const base=document.querySelector(".site-footer__base-inner").getBoundingClientRect();
@@ -81,6 +82,7 @@ for(const [engineName,engine] of browserEngines){
        inert:layers.filter(x=>x.inert).length,
        current:layers.filter(x=>x.classList.contains("is-current")).length,
        first:rect(first),second:rect(second),card:rect(frame),
+       scrollY:window.scrollY,headerHeight:document.querySelector(".site-header").getBoundingClientRect().height,
        carouselOverflow:getComputedStyle(carousel).overflowX,
        carouselSnap:getComputedStyle(carousel).scrollSnapType,
        carouselCanScroll:carousel.scrollWidth>carousel.clientWidth+5,
@@ -93,6 +95,8 @@ for(const [engineName,engine] of browserEngines){
     fail(name,global.snap.includes("y mandatory"),"page missing true native vertical section snap "+JSON.stringify(global));
     fail(name,metrics.count===9&&metrics.visible===9&&metrics.inert===0&&metrics.current===1,
       "collections still hidden behind layered stage "+JSON.stringify(metrics));
+    fail(name,metrics.scrollY<3&&Math.abs(metrics.first.top-metrics.headerHeight)<6,
+      "initial collection loads at the wrong scroll position "+JSON.stringify(metrics));
     fail(name,metrics.second.top>=metrics.first.bottom-2&&metrics.stagePosition!=="sticky",
       "section stacking is not natural "+JSON.stringify(metrics));
     fail(name,metrics.carouselOverflow==="auto"&&metrics.carouselSnap.includes("x mandatory")
@@ -174,7 +178,7 @@ for(const [engineName,engine] of browserEngines){
     await page.locator(".category-layer").nth(1).evaluate(layer=>{
       layer.scrollIntoView({block:"start",behavior:"instant"});
     });
-    await page.waitForTimeout(180);
+    await page.waitForTimeout(370);
     const section=await page.evaluate(()=>{
       const first=document.querySelectorAll(".category-layer")[0].getBoundingClientRect();
       const second=document.querySelectorAll(".category-layer")[1].getBoundingClientRect();
