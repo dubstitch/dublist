@@ -120,6 +120,7 @@ for(const [engineName,engine] of [["chromium",chromium],["webkit",webkit]]){
           const visible=await rail.evaluate(el=>getComputedStyle(el).visibility);
           if(visible!=="hidden")report(name,"rail is not hidden behind product modal");
           await page.keyboard.press("Escape");
+          await page.waitForTimeout(300);
           const restored=await rail.evaluate(el=>getComputedStyle(el).visibility);
           if(restored!=="visible")report(name,"rail not restored after modal closes");
         }
