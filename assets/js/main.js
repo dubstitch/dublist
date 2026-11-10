@@ -10,7 +10,7 @@ if (page === "women" || page === "men") {
   const [{ initModal }, { renderCategoryPage }, { initCategoryEngine }, { initCarousels }] = await Promise.all([
     import("./modal.js?v=20261110glass1"),
     import("./render-category.js"),
-    import("./category-engine.js?v=20261110glass1"),
+    import("./category-engine.js?v=20261110glass2"),
     import("./carousel.js?v=20261110glass1"),
   ]);
 
