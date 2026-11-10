@@ -32,6 +32,8 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/wishlist-http.log 2>&1 &
           sleep 2
           curl -fsS http://127.0.0.1:8765/index.html >/dev/null
+      - name: Verify section rail navigation on home and catalogs
+        run: node qa/section-rail-qa.mjs
       - name: Audit responsive behavior and accessibility
         run: |
           BROWSER_NAME=chromium SHOW_SHOTS=1 node qa/wishlist-qa.mjs
